@@ -1,4 +1,4 @@
-/* Haunted Lights Out – medium difficulty (5×5), solvable scramble */
+/* Haunted Lights Out – fixed tap behavior */
 (() => {
   const boardEl   = document.getElementById('board');
   const moveEl    = document.getElementById('moveCount');
@@ -15,16 +15,15 @@
   const gameUI    = document.getElementById('gameUI');
 
   // Config
-  const N = 5; // grid size (5×5 = classic / medium)
-  const SCRAMBLE_STEPS = 18; // medium difficulty (random valid taps count)
+  const N = 5; // grid size
+  const SCRAMBLE_STEPS = 18; // medium difficulty
   sizeLbl.textContent = `${N}×${N}`;
 
   // State
-  let grid = [];   // boolean: true = ON (candle lit), false = OFF
+  let grid = [];
   let moves = 0;
   let initialGrid = [];
 
-  // Helpers
   const idx = (r, c) => r * N + c;
   const inBounds = (r, c) => r >= 0 && r < N && c >= 0 && c < N;
 
@@ -42,7 +41,6 @@
         const i = idx(r, c);
         const btn = document.createElement('button');
         btn.className = 'cell ' + (grid[i] ? 'on' : 'off');
-        btn.setAttribute('aria-label', `Cell ${r+1},${c+1} is ${grid[i] ? 'on' : 'off'}`);
         btn.addEventListener('click', () => handleTap(r, c));
         boardEl.appendChild(btn);
       }
@@ -56,7 +54,6 @@
   }
 
   function handleTap(r, c) {
-    // Toggle self + orthogonal neighbors
     toggleAt(r, c);
     toggleAt(r-1, c);
     toggleAt(r+1, c);
@@ -69,12 +66,10 @@
   }
 
   function isSolved() {
-    // Solved when all candles are OFF
     return grid.every(v => v === false);
   }
 
   function scramble() {
-    // Start from all-off (solved). Apply a sequence of valid taps -> guaranteed solvable.
     buildBlank();
     for (let k = 0; k < SCRAMBLE_STEPS; k++) {
       const r = Math.floor(Math.random() * N);
@@ -100,7 +95,6 @@
     winModal.showModal();
   }
 
-  // Buttons
   newBtn.addEventListener('click', scramble);
   resetBtn.addEventListener('click', reset);
   againBtn.addEventListener('click', () => {
@@ -114,15 +108,13 @@
     navigator.clipboard?.writeText(codeField.value);
   });
 
-  // Start Gate
+  // Start gate
   startBtn.addEventListener('click', () => {
     startUI.remove();
     gameUI.classList.remove('hidden');
     scramble();
   });
 
-  // Prevent accidental long-press selection & pull-to-refresh quirks
-  ['touchstart','touchmove','touchend'].forEach(ev=>{
-    boardEl.addEventListener(ev, e => { e.preventDefault(); }, { passive:false });
-  });
+  // ✅ Fix: only block scroll / long-press highlighting, not taps
+  boardEl.addEventListener('touchmove', e => e.preventDefault(), { passive:false });
 })();
