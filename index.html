@@ -2,51 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>🧪 Potion Path (Math Maze)</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-  <link rel="stylesheet" href="style.css"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>🕸️ Lights Out — Haunted Candles</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Start overlay -->
-  <div id="startScreen" class="overlay">
-    <button id="startBtn" class="btn-xl">Start the Challenge</button>
-  </div>
-
-  <header>
-    <h1>🧪 Potion Path</h1>
-    <p class="sub">
-      Start with the number in the top-left flask. Move <strong>right</strong> or <strong>down</strong> only,
-      alternating <em>operator → number</em> to brew the final potion in the cauldron (bottom-right).
-      Reach the target exactly!
-    </p>
-    <div class="hud">
-      <div>Current: <span id="currentVal">—</span></div>
-      <div>Expecting: <span id="expecting">—</span></div>
-      <div>Target: <span id="targetVal">—</span></div>
-    </div>
+  <header class="top">
+    <h1>🕯️ Lights Out</h1>
+    <p class="subtitle">Extinguish every candle. Tapping a candle toggles itself and its neighbors.</p>
   </header>
 
-  <main>
-    <div id="board" class="board"></div>
-    <div class="actions">
+  <!-- Start Gate -->
+  <div id="startScreen" class="start-screen">
+    <button id="startBtn" class="btn primary big">Start the Challenge</button>
+  </div>
+
+  <!-- Game UI -->
+  <main id="gameUI" class="game hidden" aria-live="polite">
+    <section class="hud">
+      <div class="pill">Grid: <strong id="sizeLabel">5×5</strong></div>
+      <div class="pill">Moves: <strong id="moveCount">0</strong></div>
+      <div class="spacer"></div>
       <button id="newBtn" class="btn">New Puzzle</button>
-      <button id="resetBtn" class="btn ghost">Reset Path</button>
-    </div>
+      <button id="resetBtn" class="btn ghost">Reset</button>
+    </section>
+
+    <section class="board-wrap">
+      <div id="board" class="board" role="grid" aria-label="Lights Out board"></div>
+    </section>
+
+    <p class="hint">Goal: turn <em>all</em> candles off.</p>
   </main>
 
-  <!-- Success modal -->
+  <!-- Success Modal -->
   <dialog id="winModal" class="modal">
-    <div class="card">
+    <form method="dialog" class="modal-card">
       <h2>🎉 Success!</h2>
-      <p>You reached the target exactly.</p>
-      <label class="code">
-        <input id="codeField" value="SILENCEOFTHETOMBS" readonly />
+      <p>You snuffed every candle.</p>
+      <label class="code-label">Passcode for Clue 17</label>
+      <div class="code-row">
+        <input id="codeField" class="code" value="SILENCEOFTHETOMBS" readonly />
         <button id="copyBtn" class="btn small">Copy code</button>
-      </label>
-      <div class="row">
-        <button id="playAgain" class="btn">Play Again</button>
       </div>
-    </div>
+      <div class="actions">
+        <button id="playAgain" class="btn primary">Play Again</button>
+      </div>
+    </form>
   </dialog>
 
   <script src="script.js"></script>
